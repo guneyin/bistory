@@ -16,20 +16,15 @@ templ-install:
 			exit 1; \
 		fi; \
 	fi
-tailwind:
-	@if [ ! -f tailwindcss ]; then curl -sL https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64 -o tailwindcss; fi
-	
-	@chmod +x tailwindcss
 
-build: tailwind templ-install
+build: templ-install
 	@echo "Building..."
 	@templ generate
-	@./tailwindcss -i cmd/web/assets/css/input.css -o cmd/web/assets/css/output.css
-	@go build -o main cmd/api/main.go
+	@go build -o main cmd/app/main.go
 
 # Run the application
 run:
-	@go run cmd/api/main.go
+	@go run cmd/app/main.go
 
 # Test the application
 test:
@@ -40,6 +35,11 @@ test:
 clean:
 	@echo "Cleaning..."
 	@rm -f main
+
+templ:
+	@templ generate
+
+templ-run: templ run
 
 # Live Reload
 watch:

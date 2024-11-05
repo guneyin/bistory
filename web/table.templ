@@ -1,0 +1,58 @@
+package web
+
+templ Table() {
+    <script src="/assets/js/comparer.js"></script>
+
+    <div class="overflow-x-auto font-[sans-serif] pt-8" x-data="$store.main">
+      <table class="min-w-full bg-white">
+        <thead class="whitespace-nowrap bg-gray-100 rounded">
+          <tr>
+            <th class="p-4 text-left text-sm font-semibold text-black">Sembol</th>
+            <th class="p-4 text-left text-sm font-semibold text-black">İlk Fiyat</th>
+            <th class="p-4 text-left text-sm font-semibold text-black">Son Fiyat</th>
+            <th class="p-4 text-left text-sm font-semibold text-black">Getiri</th>
+            <th class="p-4 text-left text-sm font-semibold text-black">Getiri %</th>
+            <th class="p-4 text-left text-sm font-semibold text-black">Skor</th>
+          </tr>
+        </thead>
+
+        <tbody class="whitespace-nowrap" x-data="$store.comparer">
+          <template x-for="(quote, index) in list">
+          <tr class="hover:bg-gray-50">
+            // Sembol
+            <td class="p-4 text-sm text-black">
+              <div class="flex items-center cursor-pointer w-max">
+                <img class="w-10 h-10 rounded-full mx-auto" :src="quote.symbol.icon" x-show="quote.symbol.icon !== ''"/>
+                <div class="w-10 h-10 text-xl text-white bg-blue-600 flex items-center justify-center cursor-pointer rounded-full mx-auto font-[sans-serif]" x-text="quote.symbol.code.substring(0,1)" x-show="quote.symbol.icon === ''"></div>
+                <div class="ml-4">
+                  <p class="text-sm text-black" x-text="quote.symbol.code"></p>
+                  <p class="text-xs text-gray-500 mt-1" x-text="quote.symbol.name"></p>
+                </div>
+              </div>
+            </td>
+            // İlk Fiyat
+            <td class="p-4 text-sm text-black">
+              <span x-text="quote.history.begin.price.amount"></span>
+            </td>
+            // Son Fiyat
+            <td class="p-4 text-sm text-black">
+              <span x-text="quote.history.end.price.amount"></span>
+            </td>
+            // Getiri
+            <td class="p-4 text-sm text-black" x-text="quote.history.change.byAmount.amount"></td>
+            // Getiri %
+            <td class="p-4 text-sm text-black" x-text="quote.history.change.byRatio.amount"></td>
+            // Skor
+            <td class="p-4">
+                <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700" x-data="{get color() {return getQuoteScoreColor(quote.history.change.score)}}">
+                  <div :class="color" class="h-2.5 rounded-full" :style="{width: quote.history.change.score+'%'}"></div>
+                </div>
+              <p class="text-xs text-gray-500 mt-1" x-text="'%' + quote.history.change.score"></p>
+            </td>
+          </tr>
+          </template>
+        </tbody>
+      </table>
+
+    </div>
+}

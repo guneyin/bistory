@@ -2,8 +2,7 @@ package server
 
 import (
 	"github.com/gofiber/fiber/v2"
-
-	"bistory/internal/database"
+	"github.com/guneyin/bistory/internal/database"
 )
 
 type FiberServer struct {
@@ -15,7 +14,7 @@ type FiberServer struct {
 func New() *FiberServer {
 	server := &FiberServer{
 		App: fiber.New(fiber.Config{
-			ServerHeader: "bistory",
+			ServerHeader: "bistory server",
 			AppName:      "bistory",
 		}),
 

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"bistory/internal/server"
 	"context"
 	"fmt"
+	"github.com/guneyin/bistory/internal/server"
 	"log"
 	"os"
 	"os/signal"
