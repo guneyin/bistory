@@ -7,8 +7,6 @@ RUN go mod download
 
 COPY . ./
 
-RUN go install github.com/a-h/templ/cmd/templ@latest
-RUN templ generate
 RUN go build -v -o server cmd/app/main.go
 
 FROM debian:bookworm-slim
