@@ -7,8 +7,6 @@ document.addEventListener('alpine:init', () => {
                 return
             }
 
-            //let d1 = '2024-10-21'
-            //let d2 = '2024-10-25'
             let quote = await getQuoteWithHistory(code, dt1, dt2);
             let symbol = Alpine.store('main').getSymbol(code);
 
@@ -42,8 +40,8 @@ document.addEventListener('alpine:init', () => {
 
     Alpine.effect(() => {
         const code = Alpine.store('main').lastSelectedSymbol;
-        const dt1 = Alpine.store('main').dtBegin;
-        const dt2 = Alpine.store('main').dtEnd;
+        const dt1 = Alpine.store('main').dateBegin;
+        const dt2 = Alpine.store('main').dateEnd;
 
         Alpine.store('comparer').addQuote(code, dt1, dt2).then();
     })
@@ -77,5 +75,5 @@ function getQuoteScoreColor(score) {
             color = "green";
     }
 
-    return 'bg-'+color+'-400';
+    return 'bg-' + color + '-400';
 }

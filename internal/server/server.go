@@ -2,24 +2,32 @@ package server
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/guneyin/bistory/internal/database"
+	"github.com/gofiber/template/html/v2"
 )
 
-type FiberServer struct {
+type HttpServer struct {
 	*fiber.App
 
-	db database.Service
+	//db database.Service
 }
 
-func New() *FiberServer {
-	server := &FiberServer{
+func New() *HttpServer {
+	engine := html.New("./web", ".html")
+
+	// Disable this in production
+	engine.Reload(true)
+
+	s := &HttpServer{
 		App: fiber.New(fiber.Config{
 			ServerHeader: "bistory server",
 			AppName:      "bistory",
+			Views:        engine,
+			ViewsLayout:  "layout/main",
 		}),
 
-		db: database.New(),
+		//db: database.New(),
 	}
+	s.Static("/assets", "./web/assets")
 
-	return server
+	return s
 }

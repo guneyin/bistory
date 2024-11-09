@@ -1,0 +1,91 @@
+<div class="grid grid-cols-4 gap-4 py-6" x-data="$store.main">
+    <input x-ref="dateBegin" x-model="dateBegin" type='date'
+           class="px-4 py-2 text-base rounded-md bg-white border  w-full outline-blue-500"/>
+
+    <input x-ref="dateEnd" x-model="dateEnd" type='date'
+           class="px-4 py-2 text-base rounded-md bg-white border  w-full outline-blue-500"/>
+
+    <div class="col-span-2">
+        <div class="font-[sans-serif] w-max text-base rounded-md bg-white border  divide-x-2 flex  overflow-hidden">
+            <button type="button" @click="setPeriod('1A')"
+                    class="px-5 py-2.5 flex  text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
+                1A
+            </button>
+            <button type="button" @click="setPeriod('3A')"
+                    class="px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
+                3A
+            </button>
+            <button type="button" @click="setPeriod('6A')"
+                    class="px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
+                6A
+            </button>
+            <button type="button" @click="setPeriod('SB')"
+                    class="px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
+                SB
+            </button>
+            <button type="button" @click="setPeriod('1Y')"
+                    class="px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
+                1Y
+            </button>
+            <button type="button" @click="setPeriod('3Y')"
+                    class="px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
+                3Y
+            </button>
+            <button type="button" @click="setPeriod('5Y')"
+                    class="px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
+                5Y
+            </button>
+        </div>
+    </div>
+    <div @click.away="close()" class="relative col-span-2" x-data="selectConfigs($store.main.symbols)">
+
+        <input type='text'
+               class="px-4 py-2 pl-10 text-base rounded-md bg-white border w-full outline-blue-500"
+               placeholder="Hisse girin"
+               x-model="filter"
+               x-transition:leave="transition ease-in duration-100"
+               x-transition:leave-start="opacity-100"
+               x-transition:leave-end="opacity-0"
+               @mousedown="open()"
+               @keydown.enter.stop.prevent="selectOption()"
+               @keydown.arrow-up.prevent="focusPrevOption()"
+               @keydown.arrow-down.prevent="focusNextOption()"/>
+
+        <span class="absolute inset-y-0 left-3 inline-flex items-center">
+              <i class="bi bi-search"></i>
+        </span>
+
+        <span class="absolute inset-y-0 right-2 inline-flex items-center">
+              <button @click="$store.main.addSelected(selectedCode(), dateBegin, dateEnd)"
+                      class="text-gray-500 bg-blue-100 px-2 py-2 rounded-md text-xs tracking-wide font-bold cursor-pointer flex items-center">
+                  +Ekle
+              </button>
+        </span>
+
+        <ul id="dropdownMenu" x-show="isOpen()" x-transition:enter="transition ease-out duration-150"
+            class='absolute block shadow-lg bg-white py-2 px-2 z-[1000] min-w-full w-max rounded max-h-96 overflow-auto'>
+            <template x-for="(option, index) in filteredOptions()" :key="index">
+                <li @click="onOptionClick(index)" :class="classOption(option.id, index)"
+                    :aria-selected="focusedOptionIndex === index"
+                    class='py-2.5 px-4 hover:bg-blue-50 rounded text-black text-sm cursor-pointer'>
+                    <div class="flex items-center">
+
+                        <div class="w-6 flex flex-col items-center">
+                            <div class="flex relative w-5 h-5 bg-orange-500 justify-center items-center m-1 mr-2 w-4 h-4 mt-1 rounded-full ">
+                                <img class="w-5 h-5 rounded-full mx-auto" :alt="option.name" x-bind:src="option.icon">
+                            </div>
+                        </div>
+                        <div class="w-full items-center flex">
+                            <div class="mx-2 -mt-1"><span x-text="option.code"></span>
+                                <div class="text-xs truncate w-full normal-case font-normal -mt-1 text-gray-500"
+                                     x-text="option.name"></div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </template>
+        </ul>
+    </div>
+    <div class="col-span-2 ..."></div>
+</div>
+

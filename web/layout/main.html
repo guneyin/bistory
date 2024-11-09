@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Bistory v1.0</title>
+    <meta name="description" content="Basic HTML/Tailwind starter"/>
+    <meta name="author" content="Daily Dev Tips"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- bootstrap icons-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- tailwind-->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- alpinejs-->
+    <script src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
+
+    <script src="/assets/js/searchbar.js"></script>
+    <script src="/assets/js/store.js"></script>
+    <script src="/assets/js/comparer.js"></script>
+</head>
+<body>
+{{template "partial/header" .}}
+<div class="container mx-auto px-4 max-w-screen-2xl pt-8 px-4">
+    {{embed}}
+</div>
+</body>
+</html>
