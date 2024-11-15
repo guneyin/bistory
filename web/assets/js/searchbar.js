@@ -4,7 +4,10 @@ function selectConfigs(symbols) {
         show: false,
         selected: null,
         focusedOptionIndex: null,
-        options: symbols.items,
+        fuse: new Fuse(symbols.items, {
+            minMatchCharLength: 3,
+            keys: ["code", "name"],
+        }),
         close() {
             this.show = false;
             this.filter = this.selectedName();
@@ -14,9 +17,15 @@ function selectConfigs(symbols) {
             this.show = true;
             this.filter = '';
         },
-        isOpen() { return this.show === true },
-        selectedName() { return this.selected ? this.selected.code : this.filter; },
-        selectedCode() { return this.selected ? this.selected.code : this.filter; },
+        isOpen() {
+            return this.show === true
+        },
+        selectedName() {
+            return this.selected ? this.selected.code : this.filter;
+        },
+        selectedCode() {
+            return this.selected ? this.selected.code : this.filter;
+        },
         classOption(id, index) {
             const isSelected = this.selected ? (id === this.selected.id) : false;
             const isFocused = (index === this.focusedOptionIndex);
@@ -27,12 +36,7 @@ function selectConfigs(symbols) {
             };
         },
         filteredOptions() {
-            return this.options
-                ? this.options.filter(option => {
-                    return (option.code.toLowerCase().indexOf(this.filter) > -1)
-                        || (option.name.toLowerCase().indexOf(this.filter) > -1)
-                })
-                : {}
+            return this.fuse.search(this.filter);
         },
         onOptionClick(index) {
             this.focusedOptionIndex = index;
@@ -43,12 +47,12 @@ function selectConfigs(symbols) {
                 return;
             }
             this.focusedOptionIndex = this.focusedOptionIndex ?? 0;
-            const selected = this.filteredOptions()[this.focusedOptionIndex]
+            const selected = this.filteredOptions()[this.focusedOptionIndex].item;
+
             if (this.selected && this.selected.id === selected.id) {
                 this.filter = '';
                 this.selected = null;
-            }
-            else {
+            } else {
                 this.selected = selected;
                 this.filter = this.selectedName();
             }
@@ -61,8 +65,7 @@ function selectConfigs(symbols) {
             const optionsNum = Object.keys(this.filteredOptions()).length - 1;
             if (this.focusedOptionIndex > 0 && this.focusedOptionIndex <= optionsNum) {
                 this.focusedOptionIndex--;
-            }
-            else if (this.focusedOptionIndex === 0) {
+            } else if (this.focusedOptionIndex === 0) {
                 this.focusedOptionIndex = optionsNum;
             }
         },
@@ -73,15 +76,9 @@ function selectConfigs(symbols) {
             }
             if (this.focusedOptionIndex == null || this.focusedOptionIndex === optionsNum) {
                 this.focusedOptionIndex = 0;
-            }
-            else if (this.focusedOptionIndex >= 0 && this.focusedOptionIndex < optionsNum) {
+            } else if (this.focusedOptionIndex >= 0 && this.focusedOptionIndex < optionsNum) {
                 this.focusedOptionIndex++;
             }
         }
     }
-
-}
-
-function validateSearchForm() {
-
 }

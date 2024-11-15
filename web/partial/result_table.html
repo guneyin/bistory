@@ -1,4 +1,4 @@
-<div class="mt-2 py-4" x-data="$store.comparer">
+<div class="mt-2 py-4" x-data>
     <div class="overflow-x-auto font-[sans-serif]">
         <table class="min-w-full bg-white">
             <thead class="whitespace-nowrap">
@@ -14,18 +14,18 @@
             </thead>
 
             <tbody class="whitespace-nowrap">
-            <template x-for="(quote, index) in list">
+            <template x-for="(quote, index) in $store.main.compared" :key="index">
 
                 <tr class="odd:bg-blue-50">
                     <td class="p-4 text-sm" x-text="index+1"></td>
 
                     <td class="p-4 text-sm">
                         <div class="flex items-center cursor-pointer w-max">
-                            <img :src="quote.symbol.icon" x-show="quote.symbol.icon !== ''"
+                            <img :src="quote.icon" x-show="quote.icon !== ''"
                                  class="w-9 h-9 rounded-full shrink-0"/>
                             <div class="ml-4">
-                                <p class="text-sm text-black" x-text="quote.symbol.code"></p>
-                                <p class="text-xs text-gray-500" x-text="quote.symbol.name"></p>
+                                <p class="text-sm text-black" x-text="quote.symbol"></p>
+                                <p class="text-xs text-gray-500" x-text="quote.name"></p>
                             </div>
                         </div>
                     </td>
@@ -56,15 +56,8 @@
                     </td>
 
                     <td class="p-4">
-                        <button class="mr-4" title="Delete">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 fill-red-500 hover:fill-red-700"
-                                 viewBox="0 0 24 24">
-                                <path
-                                        d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
-                                        data-original="#000000"/>
-                                <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
-                                      data-original="#000000"/>
-                            </svg>
+                        <button class="mr-4" title="Delete" @click="$store.main.deleteCompared(index)">
+                            <i class="bi bi-trash" style="color: red"></i>
                         </button>
                     </td>
                 </tr>
@@ -72,25 +65,5 @@
             </template>
             </tbody>
         </table>
-
-        <div class="md:flex m-4">
-            <p class="text-sm text-gray-500 flex-1">Showind 1 to 5 of 100 entries</p>
-            <div class="flex items-center max-md:mt-4">
-                <p class="text-sm text-gray-500">Display</p>
-
-                <select class="text-sm text-gray-500 border border-gray-400 rounded px-1 py-2 mx-4 outline-none">
-                    <option>5</option>
-                    <option>10</option>
-                    <option>20</option>
-                    <option>50</option>
-                    <option>100</option>
-                </select>
-
-                <div class="border flex rounded divide-x-2 border-gray-400 divide-gray-400">
-                    <button type="button" class="px-4 py-2 hover:bg-blue-50 text-sm">Previous</button>
-                    <button type="button" class="px-4 py-2 hover:bg-blue-50 text-sm">Next</button>
-                </div>
-            </div>
-        </div>
     </div>
 </div>

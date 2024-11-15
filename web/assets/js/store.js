@@ -1,43 +1,40 @@
 document.addEventListener('alpine:init', () => {
     Alpine.store('main', {
         symbols: Alpine.$persist({}).as('main.symbols'),
-        selectedSymbols: Alpine.$persist([]).as('main.selectedSymbols'),
-        lastSelectedSymbol: '',
         dateBegin: Alpine.$persist('').as('main.dateBegin'),
         dateEnd: Alpine.$persist('').as('main.dateEnd'),
+        compared: Alpine.$persist([]).as('main.compared'),
 
         setPeriod(p) {
-            const now = new Date();
-            const month = 30;
-            const year = month * 12;
-            let days = 0;
+            let begin = dayjs();
+            let end = dayjs();
 
             switch (p) {
                 case '1A':
-                    days = month;
-                    break;
+                    begin = begin.subtract(1, 'month');
+                    break
                 case '3A':
-                    days = month * 3;
-                    break;
+                    begin = begin.subtract(3, 'month');
+                    break
                 case '6A':
-                    days = month * 6;
-                    break;
+                    begin = begin.subtract(6, 'month');
+                    break
                 case 'SB':
-                    days = daysPassed(now);
+                    begin = begin.startOf('year');
                     break;
                 case '1Y':
-                    days = year;
-                    break;
+                    begin = begin.subtract(1, 'year');
+                    break
                 case '3Y':
-                    days = year * 3;
-                    break;
+                    begin = begin.subtract(3, 'year');
+                    break
                 case '5Y':
-                    days = year * 5;
-                    break;
+                    begin = begin.subtract(5, 'year');
+                    break
             }
 
-            this.dateEnd = checkDate(now);
-            this.dateBegin = checkDate(now.setDate(now.getDate() - days));
+            this.dateBegin = begin.format('YYYY-MM-DD');
+            this.dateEnd = end.format('YYYY-MM-DD');
         },
 
         setSymbols(data) {
@@ -50,15 +47,60 @@ document.addEventListener('alpine:init', () => {
             return this.symbols.items.find((item) => item.code === code);
         },
 
-        addSelected(code) {
-            let symbol = this.getSymbol(code);
-            this.selectedSymbols.push(symbol);
-            this.lastSelectedSymbol = code;
+        async addCompared(code) {
+            if (code === '') {
+                return
+            }
+
+            let item = this.compared.find(x => x.code === code);
+
+            if (!(item === null || item === undefined)) {
+                return
+            }
+
+            let dateBegin = Alpine.store('main').dateBegin;
+            let dateEnd = Alpine.store('main').dateEnd;
+
+            let quote = await getQuoteWithHistory(code, dateBegin, dateEnd);
+            quote.icon = Alpine.store('main').getSymbol(code).icon;
+
+            this.compared.push(quote);
+
+            this.calcProfits();
+        },
+
+        deleteCompared(index) {
+            this.compared.splice(index, 1);
+        },
+
+        calcProfits() {
+            let greatest = 0.00;
+            for (let i in this.compared) {
+                const q = this.compared[i];
+                if (q.history.change.byRatio.amount > greatest) {
+                    greatest = q.history.change.byRatio.amount;
+                }
+            }
+
+            for (let i in this.compared) {
+                const q = this.compared[i];
+                const score = (q.history.change.byRatio.amount * 100) / greatest;
+                q.history.change.score = parseFloat(score.toFixed(2));
+
+            }
+        },
+
+        checkDate(d) {
+            if (!dayjs(d).isValid()) {
+                return dayjs().format('YYYY-MM-DD');
+            }
+
+            return dayjs(d).format('YYYY-MM-DD');
         },
 
         init() {
-            this.dateBegin = checkDate(this.dateBegin);
-            this.dateEnd = checkDate(this.dateEnd);
+            this.dateBegin = this.checkDate(this.dateBegin);
+            this.dateEnd = this.checkDate(this.dateEnd);
 
             let fetchSymbols = true
             let now = Math.floor(Date.now() / 1000);
@@ -76,18 +118,3 @@ document.addEventListener('alpine:init', () => {
         }
     })
 })
-
-function checkDate(d) {
-    let dt = new Date(d);
-
-    if (isNaN(dt)) {
-        dt = new Date();
-    }
-    return dt.toISOString().split('T')[0];
-}
-
-function daysPassed(d) {
-    const current = new Date(d.getTime());
-    const previous = new Date(d.getFullYear(), 0, 1);
-    return Math.ceil((current - previous + 1) / 86400000);
-}
