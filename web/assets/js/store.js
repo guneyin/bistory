@@ -71,6 +71,7 @@ document.addEventListener('alpine:init', () => {
 
         deleteCompared(index) {
             this.compared.splice(index, 1);
+            this.calcProfits();
         },
 
         calcProfits() {

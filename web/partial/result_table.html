@@ -1,69 +1,86 @@
-<div class="mt-2 py-4" x-data>
-    <div class="overflow-x-auto font-[sans-serif]">
-        <table class="min-w-full bg-white">
-            <thead class="whitespace-nowrap">
+<div class="flex w-full overflow-x-auto mt-2 py-4"
+     x-data="{ rowId: -1, selected: {} } ">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Sembol</th>
+            <th>İlk Fiyat</th>
+            <th>Son Fiyat</th>
+            <th>Getiri</th>
+            <th>Skor</th>
+            <th></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <template x-for="(quote, index) in $store.main.compared" :key="index">
             <tr>
-                <th class="p-4 text-left text-sm font-semibold text-black">#</th>
-                <th class="p-4 text-left text-sm font-semibold text-black">Sembol</th>
-                <th class="p-4 text-left text-sm font-semibold text-black">İlk Fiyat</th>
-                <th class="p-4 text-left text-sm font-semibold text-black">Son Fiyat</th>
-                <th class="p-4 text-left text-sm font-semibold text-black">Getiri</th>
-                <th class="p-4 text-left text-sm font-semibold text-black">Skor</th>
-                <th class="p-4 text-left text-sm font-semibold text-black"></th>
+                <th x-text="index+1"></th>
+                <td>
+                    <div class="flex items-center cursor-pointer w-max">
+                        <img :src="quote.icon" x-show="quote.icon !== ''"
+                             class="w-9 h-9 rounded-full shrink-0"/>
+                        <div class="ml-4">
+                            <p class="text-sm text-black" x-text="quote.symbol"></p>
+                            <p class="text-xs text-gray-500" x-text="quote.name"></p>
+                        </div>
+                    </div>
+                </td>
+
+                <td>
+                    <p class="text-sm text-black" x-text="quote.history.begin.price"></p>
+                    <p class="text-xs text-gray-500" x-text="quote.history.begin.date"></p>
+                </td>
+
+                <td>
+                    <p class="text-sm text-black" x-text="quote.history.end.price"></p>
+                    <p class="text-xs text-gray-500" x-text="quote.history.end.date"></p>
+                </td>
+
+                <td>
+                    <p class="text-sm text-black"
+                       x-text="quote.history.change.byAmount + ' (' + quote.history.change.byRatio + '%)'"></p>
+                    <p class="text-xs text-gray-500" x-text="'120 gün'"></p>
+                </td>
+
+                <td>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700"
+                         x-data="{get color() {return getQuoteScoreColor(quote.history.change.score)}}">
+                        <div :class="color" class="h-2.5 rounded-full"
+                             :style="{width: quote.history.change.score+'%'}"></div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1" x-text="'%' + quote.history.change.score"></p>
+                </td>
+
+                <td>
+                    <label class="btn btn-ghost" for="modal-1" @click="rowId = index; selected = quote">
+                        <i class="bi bi-trash" style="color: red"></i>
+                    </label>
+                </td>
             </tr>
-            </thead>
 
-            <tbody class="whitespace-nowrap">
-            <template x-for="(quote, index) in $store.main.compared" :key="index">
+        </template>
+        </tbody>
+    </table>
 
-                <tr class="odd:bg-blue-50">
-                    <td class="p-4 text-sm" x-text="index+1"></td>
+    <div x-data="{ closeModal() {$refs.modal.checked = false} }">
+        <input x-ref="modal" class="modal-state" id="modal-1" type="checkbox"/>
+        <div class="modal  w-screen">
+            <label class="modal-overlay" for="modal-1"></label>
+            <div class="modal-content flex flex-col gap-5 w-1/2">
+                <label for="modal-1" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</label>
+                <h2 class="text-md">Silme işlemini onaylayın!</h2>
+                <p x-text="selected.symbol"></p>
+                <div class="flex gap-3">
+                    <button class="btn btn-error btn-block" @click="$store.main.deleteCompared(rowId); closeModal()">
+                        Delete
+                    </button>
+                    <button class="btn btn-block" @click="closeModal()">Cancel</button>
+                </div>
 
-                    <td class="p-4 text-sm">
-                        <div class="flex items-center cursor-pointer w-max">
-                            <img :src="quote.icon" x-show="quote.icon !== ''"
-                                 class="w-9 h-9 rounded-full shrink-0"/>
-                            <div class="ml-4">
-                                <p class="text-sm text-black" x-text="quote.symbol"></p>
-                                <p class="text-xs text-gray-500" x-text="quote.name"></p>
-                            </div>
-                        </div>
-                    </td>
-
-                    <td class="p-4 text-sm">
-                        <p class="text-sm text-black" x-text="quote.history.begin.price"></p>
-                        <p class="text-xs text-gray-500" x-text="quote.history.begin.date"></p>
-                    </td>
-
-                    <td class="p-4 text-sm">
-                        <p class="text-sm text-black" x-text="quote.history.end.price"></p>
-                        <p class="text-xs text-gray-500" x-text="quote.history.end.date"></p>
-                    </td>
-
-                    <td class="p-4 text-sm">
-                        <p class="text-sm text-black"
-                           x-text="quote.history.change.byAmount + ' (' + quote.history.change.byRatio + '%)'"></p>
-                        <p class="text-xs text-gray-500" x-text="'120 gün'"></p>
-                    </td>
-
-                    <td class="p-4 text-sm">
-                        <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700"
-                             x-data="{get color() {return getQuoteScoreColor(quote.history.change.score)}}">
-                            <div :class="color" class="h-2.5 rounded-full"
-                                 :style="{width: quote.history.change.score+'%'}"></div>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1" x-text="'%' + quote.history.change.score"></p>
-                    </td>
-
-                    <td class="p-4">
-                        <button class="mr-4" title="Delete" @click="$store.main.deleteCompared(index)">
-                            <i class="bi bi-trash" style="color: red"></i>
-                        </button>
-                    </td>
-                </tr>
-
-            </template>
-            </tbody>
-        </table>
+            </div>
+        </div>
     </div>
 </div>
+

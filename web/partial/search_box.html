@@ -1,46 +1,24 @@
 <div class="grid grid-cols-4 gap-4 py-6" x-data="$store.main">
-    <input x-ref="dateBegin" x-model="dateBegin" type='date'
-           class="px-4 py-2 text-base rounded-md bg-white border  w-full outline-blue-500"/>
+    <input x-ref="dateBegin" x-model="dateBegin" type='date' class="input input-block"/>
 
-    <input x-ref="dateEnd" x-model="dateEnd" type='date'
-           class="px-4 py-2 text-base rounded-md bg-white border  w-full outline-blue-500"/>
+    <input x-ref="dateEnd" x-model="dateEnd" type='date' class="input input-block"/>
 
     <div class="col-span-2">
-        <div class="font-[sans-serif] w-max text-base rounded-md bg-white border  divide-x-2 flex  overflow-hidden">
-            <button type="button" @click="setPeriod('1A')"
-                    class="px-5 py-2.5 flex  text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
-                1A
-            </button>
-            <button type="button" @click="setPeriod('3A')"
-                    class="px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
-                3A
-            </button>
-            <button type="button" @click="setPeriod('6A')"
-                    class="px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
-                6A
-            </button>
-            <button type="button" @click="setPeriod('SB')"
-                    class="px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
-                SB
-            </button>
-            <button type="button" @click="setPeriod('1Y')"
-                    class="px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
-                1Y
-            </button>
-            <button type="button" @click="setPeriod('3Y')"
-                    class="px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
-                3Y
-            </button>
-            <button type="button" @click="setPeriod('5Y')"
-                    class="px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
-                5Y
-            </button>
+        <div class="btn-group btn-group-scrollable pt-1">
+            <button class="btn btn-solid-primary btn-sm" @click="setPeriod('1A')">1A</button>
+            <button class="btn btn-solid-primary btn-sm" @click="setPeriod('3A')">3A</button>
+            <button class="btn btn-solid-primary btn-sm" @click="setPeriod('6A')">6A</button>
+            <button class="btn btn-solid-primary btn-sm" @click="setPeriod('SB')">SB</button>
+            <button class="btn btn-solid-primary btn-sm" @click="setPeriod('1Y')">1Y</button>
+            <button class="btn btn-solid-primary btn-sm" @click="setPeriod('3Y')">3Y</button>
+            <button class="btn btn-solid-primary btn-sm" @click="setPeriod('5Y')">5Y</button>
         </div>
     </div>
+
     <div @click.away="close()" class="relative col-span-2" x-data="selectConfigs(symbols)">
 
         <input type='text'
-               class="px-4 py-2 pl-10 text-base rounded-md bg-white border w-full outline-blue-500"
+               class="px-4 py-2 pl-10 input input-block"
                placeholder="Hisse girin"
                x-model="filter"
                x-transition:leave="transition ease-in duration-100"
@@ -57,7 +35,7 @@
 
         <span class="absolute inset-y-0 right-2 inline-flex items-center">
               <button @click="addCompared(selectedCode())"
-                      class="text-gray-500 bg-blue-100 px-2 py-2 rounded-md text-xs tracking-wide font-bold cursor-pointer flex items-center">
+                      class="px-2 py-2 btn btn-solid-primary btn-xs">
                   +Ekle
               </button>
         </span>
