@@ -77,16 +77,15 @@ document.addEventListener('alpine:init', () => {
             let greatest = 0.00;
             for (let i in this.compared) {
                 const q = this.compared[i];
-                if (q.history.change.byRatio.amount > greatest) {
-                    greatest = q.history.change.byRatio.amount;
+                if (q.history.change.byRatio > greatest) {
+                    greatest = q.history.change.byRatio;
                 }
             }
 
             for (let i in this.compared) {
                 const q = this.compared[i];
-                const score = (q.history.change.byRatio.amount * 100) / greatest;
+                const score = (q.history.change.byRatio * 100) / greatest;
                 q.history.change.score = parseFloat(score.toFixed(2));
-
             }
         },
 
